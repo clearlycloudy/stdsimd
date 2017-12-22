@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["simd","Platform independent SIMD vector types and operations."],["vendor","Platform dependent vendor intrinsics."]]});

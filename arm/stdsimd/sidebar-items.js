@@ -1,0 +1,1 @@
+initSidebarItems({"macro":[["cfg_feature_enabled","Is a feature supported by the host CPU?"]],"mod":[["simd","Platform independent SIMD vector types and operations."],["vendor","Platform dependent vendor intrinsics."]]});

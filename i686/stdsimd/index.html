@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `stdsimd` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, stdsimd">
+
+    <title>stdsimd - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
+        
+        <p class='location'>Crate stdsimd</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'stdsimd', ty: 'mod', relpath: '../'};</script></div>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>stdsimd</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/stdsimd/lib.rs.html#1-156' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>SIMD and vendor intrinsics support library.</p>
+
+<p>This documentation is only for one particular architecture, you can find
+others at:</p>
+
+<ul>
+<li><a href="https://rust-lang-nursery.github.io/stdsimd/i686/stdsimd/">i686</a></li>
+<li><a href="https://rust-lang-nursery.github.io/stdsimd/x86_64/stdsimd/"><code>x86_64</code></a></li>
+<li><a href="https://rust-lang-nursery.github.io/stdsimd/arm/stdsimd/">arm</a></li>
+<li><a href="https://rust-lang-nursery.github.io/stdsimd/aarch64/stdsimd/">aarch64</a></li>
+</ul>
+
+<h1 id='overview' class='section-header'><a href='#overview'>Overview</a></h1>
+<p>The <code>simd</code> module exposes <em>portable vector types</em>. These types work on all
+platforms, but their run-time performance may vary depending on hardware
+support.</p>
+
+<p>The <code>vendor</code> module exposes vendor-specific intrinsics that typically
+correspond to a single machine instruction. In general, these intrinsics
+are not portable: their availability is architecture-dependent, and not all
+machines of that architecture might provide the intrinsic.</p>
+
+<p>Two macros make it possible to write portable code:</p>
+
+<ul>
+<li><code>cfg!(target_feature = &quot;feature&quot;)</code>: returns <code>true</code> if the <code>feature</code> is
+enabled in all CPUs that the binary will run on (at compile-time)</li>
+<li><code>cfg_feature_enabled!(&quot;feature&quot;)</code>: returns <code>true</code> if the <code>feature</code> is
+enabled in the CPU in which the binary is currently running on (at
+run-time, unless the result is known at compile time)</li>
+</ul>
+
+<h1 id='example' class='section-header'><a href='#example'>Example</a></h1>
+<pre class="rust rust-example-rendered">
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">cfg_target_feature</span>, <span class="ident">target_feature</span>)]</span>
+
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">stdsimd</span>;
+<span class="kw">use</span> <span class="ident">stdsimd</span>::<span class="ident">vendor</span>;
+<span class="kw">use</span> <span class="ident">stdsimd</span>::<span class="ident">simd</span>::<span class="ident">i32x4</span>;
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">i32x4</span>::<span class="ident">new</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>);
+    <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">i32x4</span>::<span class="ident">splat</span>(<span class="number">10</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>, <span class="ident">i32x4</span>::<span class="ident">new</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>));
+    <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">+</span> <span class="ident">b</span>;
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>, <span class="ident">i32x4</span>::<span class="ident">new</span>(<span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>));
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sum_portable</span>(<span class="ident">b</span>), <span class="number">40</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sum_ct</span>(<span class="ident">b</span>), <span class="number">40</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sum_rt</span>(<span class="ident">b</span>), <span class="number">40</span>);
+}
+
+<span class="comment">// Sums the elements of the vector.</span>
+<span class="kw">fn</span> <span class="ident">sum_portable</span>(<span class="ident">x</span>: <span class="ident">i32x4</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+        <span class="ident">r</span> <span class="op">+=</span> <span class="ident">x</span>.<span class="ident">extract</span>(<span class="ident">i</span>);
+    }
+    <span class="ident">r</span>
+}
+
+<span class="comment">// Sums the elements of the vector using SSE2 instructions.</span>
+<span class="comment">// This function is only safe to call if the CPU where the</span>
+<span class="comment">// binary runs supports SSE2.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;+sse2&quot;</span>]</span>
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">sum_sse2</span>(<span class="ident">x</span>: <span class="ident">i32x4</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">vendor</span>::<span class="ident">_mm_add_epi32</span>(<span class="ident">x</span>, <span class="ident">vendor</span>::<span class="ident">_mm_srli_si128</span>(<span class="ident">x</span>.<span class="ident">into</span>(), <span class="number">8</span>).<span class="ident">into</span>());
+    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">vendor</span>::<span class="ident">_mm_add_epi32</span>(<span class="ident">x</span>, <span class="ident">vendor</span>::<span class="ident">_mm_srli_si128</span>(<span class="ident">x</span>.<span class="ident">into</span>(), <span class="number">4</span>).<span class="ident">into</span>());
+    <span class="ident">vendor</span>::<span class="ident">_mm_cvtsi128_si32</span>(<span class="ident">x</span>)
+}
+
+<span class="comment">// Uses the SSE2 version if SSE2 is enabled for all target</span>
+<span class="comment">// CPUs at compile-time (does not perform any run-time</span>
+<span class="comment">// feature detection).</span>
+<span class="kw">fn</span> <span class="ident">sum_ct</span>(<span class="ident">x</span>: <span class="ident">i32x4</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>),
+              <span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>))]</span>
+    {
+        <span class="comment">// This function is only available for x86/x86_64 targets,</span>
+        <span class="comment">// and is only safe to call it if the target supports SSE2</span>
+        <span class="kw">unsafe</span> { <span class="ident">sum_sse2</span>(<span class="ident">x</span>) }
+    }
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>),
+              <span class="ident">target_feature</span> <span class="op">=</span> <span class="string">&quot;sse2&quot;</span>)))]</span>
+    {
+        <span class="ident">sum_portable</span>(<span class="ident">x</span>)
+    }
+}
+
+<span class="comment">// Detects SSE2 at run-time, and uses a SIMD intrinsic if enabled.</span>
+<span class="kw">fn</span> <span class="ident">sum_rt</span>(<span class="ident">x</span>: <span class="ident">i32x4</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>))]</span>
+    {
+        <span class="comment">// If SSE2 is not enabled at compile-time, this</span>
+        <span class="comment">// detects whether SSE2 is available at run-time:</span>
+        <span class="kw">if</span> <span class="macro">cfg_feature_enabled</span><span class="macro">!</span>(<span class="string">&quot;sse2&quot;</span>) {
+            <span class="kw">return</span> <span class="kw">unsafe</span> { <span class="ident">sum_sse2</span>(<span class="ident">x</span>) };
+        }
+    }
+    <span class="ident">sum_portable</span>(<span class="ident">x</span>)
+}</pre>
+
+<h1 id='status' class='section-header'><a href='#status'>Status</a></h1>
+<p>This crate is intended for eventual inclusion into the standard library,
+but some work and experimentation is needed to get there! First and
+foremost you can help out by kicking the tires on this crate and seeing if
+it works for your use case! Next up you can help us fill out the <a href="https://github.com/rust-lang-nursery/stdsimd/issues/40">vendor
+intrinsics</a> to ensure that we&#39;ve got all the SIMD support
+necessary.</p>
+
+<p>The language support and status of SIMD is also still a little up in the
+air right now, you may be interested in a few issues along these lines:</p>
+
+<ul>
+<li><a href="https://github.com/rust-lang/rust/issues/27731">Overal tracking issue for SIMD support</a></li>
+<li><a href="https://github.com/rust-lang/rust/issues/29717"><code>cfg_target_feature</code> tracking issue</a></li>
+<li><a href="https://github.com/rust-lang/rust/issues/44367">SIMD types currently not sound</a></li>
+<li><a href="https://github.com/rust-lang/rust/issues/44839"><code>#[target_feature]</code> improvements</a></li>
+</ul>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="simd/index.html"
+                                  title='mod stdsimd::simd'>simd</a></td>
+                           <td class='docblock-short'>
+                                <p>Platform independent SIMD vector types and operations.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="vendor/index.html"
+                                  title='mod stdsimd::vendor'>vendor</a></td>
+                           <td class='docblock-short'>
+                                <p>Platform dependent vendor intrinsics.</p>
+                           </td>
+                       </tr></table><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="macro" href="macro.cfg_feature_enabled.html"
+                                  title='macro stdsimd::cfg_feature_enabled'>cfg_feature_enabled</a></td>
+                           <td class='docblock-short'>
+                                <p>Is a feature supported by the host CPU?</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>↑</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>↓</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt style="width:31px;">+ / -</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "stdsimd";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
